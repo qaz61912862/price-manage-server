@@ -90,6 +90,13 @@ const getUserInfo = (id) => {
   `
   return exec(sql)
 }
+
+const searchRealName = (key) => {
+  let sql = `
+    select * from users where realname like '%${key}%'
+  `
+  return exec(sql)
+}
 module.exports = {
   addUser,
   checkUser,
@@ -98,5 +105,6 @@ module.exports = {
   getUserList,
   getTotalUser,
   delUser,
-  getUserInfo
+  getUserInfo,
+  searchRealName
 }

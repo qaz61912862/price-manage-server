@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const { addUser, checkUser, login, modifyUser, getUserList, getTotalUser, delUser, getUserInfo }  = require('../controller/login')
+const { addUser, checkUser, login, modifyUser, getUserList, getTotalUser, delUser, getUserInfo, searchRealName }  = require('../controller/login')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 const adminCheck = require('../middleware/adminCheck')
 
@@ -93,7 +93,7 @@ router.get('/logout', (req, res, next) => {
     })
   }
 })
-
+// 获取自己的信息
 router.get('/getMyInfo', (req, res, next) => {
   const session = req.session;
   if (session.username) {
@@ -107,6 +107,7 @@ router.get('/getMyInfo', (req, res, next) => {
   }
 })
 
+// 修改自己的信息
 router.post('/modifyUserInfo', (req, res, next) => {
   const session = req.session;
   const { username, realname, avatar } = req.body
@@ -128,6 +129,25 @@ router.post('/modifyUserInfo', (req, res, next) => {
     }
   })
 })
+// 管理员修改别人的信息
+router.post('/modifyOtherInfo', adminCheck, (req, res, next) => {
+  const { id, username, realname, avatar } = req.body
+  const result = modifyUser(id, username, realname, avatar)
+  return result.then((data) => {
+    if (data) {
+      res.json({
+        errno: 0,
+        msg: '修改成功'
+      })
+    } else {
+      res.json({
+        errno: -1,
+        msg: '数据错误'
+      })
+    }
+  })
+})
+// 管理员删除用户
 router.post('/delUser', adminCheck, (req, res, next) => {
   const { id } = req.body
   const result = delUser(id)
@@ -138,46 +158,52 @@ router.post('/delUser', adminCheck, (req, res, next) => {
   })
 })
 
-router.post('/getUserList', (req, res, next) => {
-  if (req.session.isAdmin === 0) {
-    res.json({
-      errno: -1,
-      msg: '没有权限'
+// 获取用户列表（管理员验证）
+router.post('/getUserList', adminCheck, (req, res, next) => {
+  const { page } = req.body
+  const result = getUserList(page)
+  let p1 = new Promise(resolve => {
+    result.then((data) => {
+      resolve(data)
     })
-  } else {
-    const { page } = req.body
-    const result = getUserList(page)
-    let p1 = new Promise(resolve => {
-      result.then((data) => {
-        resolve(data)
-      })
+  })
+  let p2 = new Promise(resolve => {
+    getTotalUser().then((data) => {
+      resolve(data)
     })
-    let p2 = new Promise(resolve => {
-      getTotalUser().then((data) => {
-        resolve(data)
-      })
-    })
-    Promise.all([p1, p2]).then((values) => {
-      if (values) {
-        let info = {
-          data: values[0],
-          total: values[1]
-        }
-        res.json(
-          new SuccessModel(info, 'success')
-        )
+  })
+  Promise.all([p1, p2]).then((values) => {
+    if (values) {
+      let info = {
+        data: values[0],
+        total: values[1]
       }
-    })
-  }
+      res.json(
+        new SuccessModel(info, 'success')
+      )
+    }
+  })
 })
 
+// 管理员获取某个用户的详情
 router.post('/getUserInfo', adminCheck, (req, res, next) => {
   let { id } = req.body
-  console.log(id)
   const result = getUserInfo(id)
-  return result.then((data) => [
+  return result.then((data) => {
     res.json(new SuccessModel(data[0], '获取成功'))
-  ])
+  })
+})
+
+// 管理员搜索某个用户
+router.post('/searchUser', adminCheck, (req, res, next) => {
+  let { key } = req.body
+  const result = searchRealName(key)
+  return result.then((data) => {
+    res.json(
+      new SuccessModel(data, 'success')
+    )
+  })
+
 })
 
 module.exports = router;
