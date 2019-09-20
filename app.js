@@ -12,12 +12,17 @@ var logger = require('morgan');
 // 定义路由文件
 var carsRouter = require('./routes/car');
 var loginRouter = require('./routes/login');
+var articleRouter = require('./routes/article');
+
 
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session)
 
 // 生成实例
 var app = express();
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -74,6 +79,8 @@ app.all('*', function (req, res, next) {
 // app.use('/users', usersRouter);
 app.use('/api/car', carsRouter);
 app.use('/api/user', loginRouter)
+app.use('/api/article', articleRouter)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
