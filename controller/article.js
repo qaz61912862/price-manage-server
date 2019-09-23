@@ -26,7 +26,7 @@ const getArticleList = (page) => {
   } else {
     start = 0
   }
-  sql += `LIMIT ${start}, ${count}`
+  // sql += `LIMIT ${start}, ${count}`
   // console.log(sql)
   return exec(sql)
 }
@@ -51,7 +51,7 @@ const getMyArticleList = (page, authorId) => {
   } else {
     start = 0
   }
-  sql += `LIMIT ${start}, ${count}`
+  // sql += `LIMIT ${start}, ${count}`
   return exec(sql)
 }
 
@@ -75,7 +75,7 @@ const getReadyArticleList = (page) => {
   } else {
     start = 0
   }
-  sql += `LIMIT ${start}, ${count}`
+  // sql += `LIMIT ${start}, ${count}`
   return exec(sql)
 }
 
@@ -88,6 +88,48 @@ const getReadyTotal = () => {
   })
 }
 
+const successCheck = (array) => {
+  let str = array.join(',')
+  let sql = `
+    update article set state=1 where id in (${str})
+  `
+  return exec(sql).then(rows => {
+    return rows[0]
+  })
+}
+
+const failCheck = (array, reason) => {
+  let str = array.join(',')
+  let sql = `
+    update article set state=2, reason='${reason}' where id in (${str})
+  `
+  return exec(sql).then(rows => {
+    return rows[0]
+  })
+}
+
+const getArticleDetail = (id) => {
+  let sql = `
+    select * from article where id=${id}
+  `
+  return exec(sql).then((result) => {
+    return result[0]
+  })
+}
+
+const updateArticleDetail = (article = {}) => {
+  const { id, title, imageUrl, intro, content } = article
+  let sql = `
+    update article set title='${title}', article_img='${imageUrl}', list_show_text='${intro}', content='${content}', state=0 where id=${id}
+  `
+  return exec(sql).then((insertData) => {
+    return {
+      msg: '发布成功'
+    }
+  })
+  
+}
+
 module.exports = {
   createArticle,
   getArticleList,
@@ -95,5 +137,9 @@ module.exports = {
   getMyArticleList,
   getMyTotal,
   getReadyArticleList,
-  getReadyTotal
+  getReadyTotal,
+  successCheck,
+  failCheck,
+  getArticleDetail,
+  updateArticleDetail
 }

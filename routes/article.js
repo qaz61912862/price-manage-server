@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const { createArticle, getArticleList, getTotal, getMyArticleList, getMyTotal, getReadyArticleList, getReadyTotal }  = require('../controller/article')
+const { updateArticleDetail, getArticleDetail, failCheck, successCheck, createArticle, getArticleList, getTotal, getMyArticleList, getMyTotal, getReadyArticleList, getReadyTotal }  = require('../controller/article')
 const { SuccessModel } = require('../model/resModel')
 
 
@@ -101,4 +101,44 @@ router.post('/getReadyArticleList', (req, res, next) => {
   })
 })
 
+router.post('/successCheck', (req, res, next) => {
+  let array = req.body.idArray
+  const result = successCheck(array)
+  return result.then((result) => {
+    res.json(
+      new SuccessModel(result, 'success')
+    )
+  })
+})
+
+router.post('/failCheck', (req, res, next) => {
+  let array = req.body.idArray
+  let reason = req.body.reason
+  const result = failCheck(array, reason)
+  return result.then((result) => {
+    res.json(
+      new SuccessModel(result, 'success')
+    )
+  })
+})
+
+router.post('/getArticleDetail', (req, res, next) => {
+  let id = req.body.id;
+  const result = getArticleDetail(id)
+  return result.then((result) => {
+    res.json(
+      new SuccessModel(result, 'success')
+    )
+  })
+})
+
+router.post('/updateArticleDetail', (req, res, next) => {
+  const article = req.body
+  const result = updateArticleDetail(article)
+  return result.then((result) => {
+    res.json(
+      new SuccessModel(result, 'success')
+    )
+  })
+})
 module.exports = router;
