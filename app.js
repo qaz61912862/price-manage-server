@@ -13,6 +13,7 @@ var logger = require('morgan');
 var carsRouter = require('./routes/car');
 var loginRouter = require('./routes/login');
 var articleRouter = require('./routes/article');
+var pictureRouter = require('./routes/picture');
 
 
 const session = require('express-session');
@@ -80,6 +81,7 @@ app.all('*', function (req, res, next) {
 app.use('/api/car', carsRouter);
 app.use('/api/user', loginRouter)
 app.use('/api/article', articleRouter)
+app.use('/api/picture', pictureRouter)
 
 
 // catch 404 and forward to error handler

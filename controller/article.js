@@ -17,7 +17,7 @@ const createArticle= (article = {}, authorId, author, avatar, state) => {
 
 const getArticleList = (page) => {
   let sql = `
-    select * from article where state=1
+    select * from article where state=1 order by is_hot desc, updateTime desc, id desc
   `
   let count = 3
   let start
@@ -42,7 +42,7 @@ const getTotal = () => {
 
 const getMyArticleList = (page, authorId) => {
   let sql = `
-    select * from article where authorId=${authorId}
+    select * from article where authorId=${authorId} order by id desc
   `
   let count = 3
   let start
@@ -66,7 +66,7 @@ const getMyTotal = (authorId) => {
 
 const getReadyArticleList = (page) => {
   let sql = `
-    select * from article where state=0
+    select * from article where state=0 order by id desc
   `
   let count = 3
   let start
@@ -130,7 +130,29 @@ const updateArticleDetail = (article = {}) => {
   
 }
 
+const deleteArticle = (array) => {
+  let str = array.join(',')
+  let sql = `
+    update article set state=3 where id in (${str})
+  `
+  return exec(sql).then(rows => {
+    return rows[0]
+  })
+}
+
+const toTopArticle = (array) => {
+  let str = array.join(',')
+  let time = Date.now()
+  let sql = `
+    update article set is_hot = 1, updateTime = ${time} where id in (${str})
+  `
+  return exec(sql).then(rows => {
+    return rows[0]
+  })
+}
+
 module.exports = {
+  toTopArticle,
   createArticle,
   getArticleList,
   getTotal,
@@ -141,5 +163,6 @@ module.exports = {
   successCheck,
   failCheck,
   getArticleDetail,
-  updateArticleDetail
+  updateArticleDetail,
+  deleteArticle
 }
