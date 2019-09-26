@@ -13,6 +13,16 @@ const con = mysql.createConnection(
   }
 )
 
+// const con = mysql.createConnection(
+//   {
+//     host: 'cd-cdb-1xoq1gum.sql.tencentcdb.com',
+//     user: 'root',
+//     password: '774612160a*',
+//     port: '62805',
+//     database: 'manage'
+//   }
+// )
+
 con.connect()
 
 function exec(sql) {

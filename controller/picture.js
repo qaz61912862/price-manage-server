@@ -2,7 +2,7 @@ const { exec }  = require('../db/mysql')
 
 const getAllBrand = () => {
   const sql = `
-  select  c.*,p.* from picture as c left join picture p on c.parent_id = p.id
+  select id,name,parent_id from picture where parent_id=0
   `
   return exec(sql)
 }
@@ -18,7 +18,16 @@ const addBrand = (name, parent_id) => {
   })
 }
 
+const getCorrespondingBrand = (parent_id) => {
+  const sql = `
+  select id,name,parent_id from picture where parent_id=${parent_id}
+  `
+  return exec(sql)
+}
+
+
 module.exports = {
+  getCorrespondingBrand,
   getAllBrand,
   addBrand
 }

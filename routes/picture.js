@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const { getAllBrand, addBrand }  = require('../controller/picture')
+const { getAllBrand, addBrand, getCorrespondingBrand }  = require('../controller/picture')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 
 router.get('/getAllBrand', (req, res, next) => {
@@ -21,6 +21,16 @@ router.post('/addBrand', (req, res, next) => {
     )
   })
 
+})
+
+router.post('/getCorrespondingBrand', (req, res, next) => {
+  const { parent_id } = req.body
+  const result = getCorrespondingBrand(parent_id)
+  return result.then((detail) => {
+    res.json(
+      new SuccessModel(detail, 'success')
+    )
+  })
 })
 
 module.exports = router;
