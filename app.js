@@ -78,6 +78,7 @@ app.use(session({
 // });
 app.all('*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  // res.header('Access-Control-Allow-Origin', 'http://106.54.204.54');
   // res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header('Access-Control-Allow-Methods', '*');
