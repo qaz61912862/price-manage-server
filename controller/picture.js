@@ -2,9 +2,19 @@ const { exec }  = require('../db/mysql')
 
 const getAllBrand = () => {
   const sql = `
-  select id,name,parent_id from picture where parent_id=0
+  select id,name,parent_id,isHaveBrand from picture where parent_id=0
   `
   return exec(sql)
+}
+
+const changeHaveBrand = (parent_id) => {
+  let sql = `
+    update picture set isHaveBrand=1 where id=${parent_id} and type=1
+  `
+  // console.log(sql)
+  return exec(sql).then((result) => {
+    
+  })
 }
 
 const addBrand = (name, parent_id, type) => {
@@ -38,9 +48,9 @@ const saveImageForCar = (array, parent_id) => {
 }
 
 const updateImageForCar = (array, parent_id) => {
-  // const sql = `
-  //   update picture set picture='${array}' where 
-  // `
+  const sql = `
+    update picture set picture='${array}' where parent_id=${parent_id} and type=4
+  `
   // console.log(sql)
   return exec(sql).then((insertData) => {
     return {
@@ -60,9 +70,11 @@ const getImageList = (parent_id) => {
 }
 
 module.exports = {
+  changeHaveBrand,
   getCorrespondingBrand,
   getAllBrand,
   addBrand,
   saveImageForCar,
-  getImageList
+  getImageList,
+  updateImageForCar
 }
