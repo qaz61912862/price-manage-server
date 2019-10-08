@@ -62,6 +62,7 @@ router.post('/getImageList', (req, res, next) => {
   const { parent_id } = req.body
   const result = getImageList(parent_id)
   return result.then((detail) => {
+    if (detail)
     res.json(
       new SuccessModel(JSON.parse(detail.picture), 'success')
     )
