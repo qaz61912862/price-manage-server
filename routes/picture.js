@@ -66,6 +66,9 @@ router.post('/getImageList', (req, res, next) => {
     res.json(
       new SuccessModel(JSON.parse(detail.picture), 'success')
     )
+    res.json(
+      new SuccessModel([], 'success')
+    )
   })
 })
 
