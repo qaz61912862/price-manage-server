@@ -15,10 +15,10 @@ const con = mysql.createConnection(
 
 // const con = mysql.createConnection(
 //   {
-//     host: 'cd-cdb-1xoq1gum.sql.tencentcdb.com',
+//     host: 'cdb-i70lgkbq.bj.tencentcdb.com',
 //     user: 'root',
 //     password: '774612160a*',
-//     port: '62805',
+//     port: '10175',
 //     database: 'manage'
 //   }
 // )
